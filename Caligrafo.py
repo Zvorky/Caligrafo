@@ -83,33 +83,38 @@ class TextBox:
 
     #   Return the text with the formatting applied
     def ConvertStr(self):
+
+        # get the right paragraph spacing
         if(self.width > 0 and self.spacing.paragraph >= self.width):
             paragraph = (self.width-1)
         else:
             paragraph = self.spacing.paragraph
         
-        string  = ' ' * paragraph
-        columns = paragraph
-        lines   = 1
+        # starts with paragraph
+        string = ' ' * paragraph
 
-        for letter in self.text:
-            columns += 1
+        # current indexes
+        column = paragraph
+        line   = 1
+        i      = 0
 
-            string += letter
-
-            if(letter == '\n'):         # New Line → Paragraph
-                string += ' ' * paragraph
-                columns = paragraph
-                lines += 1
-
-            if(self.width > 0 and columns == self.width):    # Width Limit → New Line
-                string += '\n'
-                columns = 0
-                lines += 1
+        for char in self.text:
             
+            # New Line into Paragraph
+            if(char == '\n'):
+                string += '\n' + ' ' * paragraph
+                column += paragraph
+                line   += 1
+            
+            else:
+                string += char
+                column += 1
+
+            i += 1
+
         return string
 
+
+
 test = TextBox('xdddddddddddddddddd\no.o')
-test.heigth = 2
-test.width = 11
 print(test.ConvertStr())
