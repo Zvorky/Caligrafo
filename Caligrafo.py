@@ -46,10 +46,10 @@ class Spacing:
 
 
 class TextBox:
-    def __init__(self, text = '', width = 0, heigth = 0):
+    def __init__(self, text = '', width = 0, height = 0):
         self.text = text
         self.width = width
-        self.heigth = heigth
+        self.height = height
         self.spacing = Spacing()
         self.alignH = 'left'
         self.alignV = 'top'
