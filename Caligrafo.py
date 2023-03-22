@@ -98,13 +98,17 @@ class TextBox:
         line   = 1
         i      = 0
 
+        # shows when text exceeds the box size
+        limit = '[...]'
+
         for char in self.text:
             
            # New Line
             if(char == '\n'):
                 # Height Limit
                 if(line == self.height):
-                    string += '[...]'
+                    string += ' ' * (self.width - column)
+                    string = string[0:len(string)-len(limit)] + limit
                     return string
                 
                 # New Line into Paragraph
