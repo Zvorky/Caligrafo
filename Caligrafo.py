@@ -93,15 +93,21 @@ class TextBox:
         # starts with paragraph
         string = ' ' * paragraph
 
-        # current indexes
+        # current indexes (column and line starts at 1)
         column = paragraph
         line   = 1
         i      = 0
 
         for char in self.text:
             
-            # New Line into Paragraph
+           # New Line
             if(char == '\n'):
+                # Height Limit
+                if(line == self.height):
+                    string += '[...]'
+                    return string
+                
+                # New Line into Paragraph
                 string += '\n' + ' ' * paragraph
                 column += paragraph
                 line   += 1
@@ -124,4 +130,5 @@ class TextBox:
 
 test = TextBox('xdddddddddddddddddd\no.o')
 test.width = 16
+test.height = 2
 print(test.ConvertStr())
