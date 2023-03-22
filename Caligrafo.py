@@ -106,6 +106,12 @@ class TextBox:
                 column += paragraph
                 line   += 1
             
+            # Width Limit
+            elif(column == self.width):
+                string += '\n' + char
+                line   += 1
+                column  = 1
+            
             else:
                 string += char
                 column += 1
@@ -117,4 +123,5 @@ class TextBox:
 
 
 test = TextBox('xdddddddddddddddddd\no.o')
+test.width = 16
 print(test.ConvertStr())
