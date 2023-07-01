@@ -109,12 +109,22 @@ class TextBox:
         newparagraph = True
         for char in self.text:
             
+            # Paragraph Spacing
             if(newparagraph):
                 newparagraph = False
                 string += ' ' * paragraph
                 column = paragraph
             
             if(char == '\n'):
+                # Height Limit
+                if(line == self.height):
+                    string += ' ' * (self.width - column)
+                    if(self.width):
+                        string = string[0:len(string)-len(self.limitTxt)]
+                    string += self.limitTxt                        
+                    return string
+
+                # New Line into Paragraph
                 newparagraph = True
                 line   += 1
             
