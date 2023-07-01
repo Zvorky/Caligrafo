@@ -18,7 +18,6 @@
 
 
 
-
 import os
 
 
@@ -53,14 +52,14 @@ class Spacing:
 
 
 class TextBox:
-    def __init__(self, text = '', width = 0, height = 0, limitTxt = '[...]'):
+    def __init__(self, text = '', width = 0, height = 0, limitMsg = '[...]'):
         self.text = text
         self.width = width
         self.height = height
         self.spacing = Spacing()
         self.alignH = 'left'
         self.alignV = 'top'
-        self.limitTxt = limitTxt
+        self.limitMsg = limitMsg
     
 
     #   Horizontal Alignment = left; center; right; justified
@@ -130,20 +129,34 @@ class TextBox:
                 string += char
                 column += 1
             
-            # Height Limit
+            # Check Limit and add New Line
             if(newline):
                 newline = False
+
+                # Height Limit
                 if(line == self.height):
-                    if(len(string) <= len(self.limitTxt) + paragraph):
-                        string = ''
+
+                    # Remove Paragraph or all Text if needed
+                    if(len(string) <= len(self.limitMsg) + paragraph):
+                        if(len(string) <= len(self.limitMsg)):
+                            string = ''
+                        else:
+                            string = string[paragraph:-1]
+                    
+                    # Fills the Text Box with spaces
                     else:
                         if(self.width):
                             string += ' ' * (self.width - column)
-                            string = string[0:len(string) - len(self.limitTxt)]
-                    string += self.limitTxt
+                            string = string[0:len(string) - len(self.limitMsg)]
+                    
+                    if(len(self.limitMsg) > self.width and line > 1):
+                        string += '\n'
+                    
+                    string += self.limitMsg
                     
                     return string
                 
+                # Add Newline
                 string += '\n' + char
                 column = 1
                 line   += 1
@@ -157,8 +170,9 @@ if __name__ == '__main__':
     test.width = int(input('width:'))
     test.height = int(input('height:'))
     
+    print('_'*test.width)
     for i in range(test.width):
         print((i+1)%10, end='')
-    print()
+    print('\n')
     
     print(test.ConvertStr())
