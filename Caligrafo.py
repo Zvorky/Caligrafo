@@ -53,13 +53,14 @@ class Spacing:
 
 
 class TextBox:
-    def __init__(self, text = '', width = 0, height = 0):
+    def __init__(self, text = '', width = 0, height = 0, limitTxt = '[...]'):
         self.text = text
         self.width = width
         self.height = height
         self.spacing = Spacing()
         self.alignH = 'left'
         self.alignV = 'top'
+        self.limitTxt = limitTxt
     
 
     #   Horizontal Alignment = left; center; right; justified
@@ -94,41 +95,30 @@ class TextBox:
 
     #   Return the text with the formatting applied
     def ConvertStr(self):
+        string = ''
 
         # get the right paragraph spacing
         if(self.width > 0 and self.spacing.paragraph >= self.width):
             paragraph = (self.width-1)
         else:
             paragraph = self.spacing.paragraph
-        
-        # starts with paragraph
-        string = ' ' * paragraph
 
-        # current indexes (column and line starts at 1)
-        column = paragraph
-        line   = 1
-        i      = 0
+        column = paragraph  # Number of Columns in current Line
+        line   = 1          # Number of Lines in current String
 
-        # shows when text exceeds the box size
-        limit = '[...]'
-
+        newparagraph = True
         for char in self.text:
             
-           # New Line
+            if(newparagraph):
+                newparagraph = False
+                string += ' ' * paragraph
+                column = paragraph
+            
             if(char == '\n'):
-                # Height Limit
-                if(line == self.height):
-                    string += ' ' * (self.width - column)
-                    string = string[0:len(string)-len(limit)] + limit
-                    return string
-                
-                # New Line into Paragraph
-                string += '\n' + ' ' * paragraph
-                column += paragraph
+                newparagraph = True
                 line   += 1
             
-            # Width Limit
-            elif(column == self.width):
+            if(column == self.width):
                 string += '\n' + char
                 line   += 1
                 column  = 1
@@ -136,15 +126,13 @@ class TextBox:
             else:
                 string += char
                 column += 1
-
-            i += 1
-
+            
         return string
 
 
 
 if __name__ == '__main__':
-    test = TextBox('xdddddddddddddddddd\no.o')
+    test = TextBox('xdddddddddddddddddd\no.o\n.-.')
     test.width = int(input('width:'))
     test.height = int(input('height:'))
     print(test.ConvertStr())
