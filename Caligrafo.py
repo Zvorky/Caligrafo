@@ -97,7 +97,7 @@ class TextBox:
     def ConvertStr(self):
         string = ''
 
-        # get the right paragraph spacing
+        # Reduce the paragraph spacing if needed
         if(self.width > 0 and self.spacing.paragraph >= self.width):
             paragraph = (self.width-1)
         else:
@@ -106,6 +106,7 @@ class TextBox:
         column = paragraph  # Number of Columns in current Line
         line   = 1          # Number of Lines in current String
 
+        newline = False
         newparagraph = True
         for char in self.text:
             
@@ -115,34 +116,49 @@ class TextBox:
                 string += ' ' * paragraph
                 column = paragraph
             
+            # New Line into Paragraph
             if(char == '\n'):
-                # Height Limit
-                if(line == self.height):
-                    string += ' ' * (self.width - column)
-                    if(self.width):
-                        string = string[0:len(string)-len(self.limitTxt)]
-                    string += self.limitTxt                        
-                    return string
-
-                # New Line into Paragraph
+                char = ''
+                newline = True
                 newparagraph = True
-                line   += 1
             
-            if(column == self.width):
-                string += '\n' + char
-                line   += 1
-                column  = 1
+            # Width Limit into New Line
+            elif(column == self.width):
+                newline = True
             
             else:
                 string += char
                 column += 1
+            
+            # Height Limit
+            if(newline):
+                newline = False
+                if(line == self.height):
+                    if(len(string) <= len(self.limitTxt) + paragraph):
+                        string = ''
+                    else:
+                        if(self.width):
+                            string += ' ' * (self.width - column)
+                            string = string[0:len(string) - len(self.limitTxt)]
+                    string += self.limitTxt
+                    
+                    return string
+                
+                string += '\n' + char
+                column = 1
+                line   += 1
             
         return string
 
 
 
 if __name__ == '__main__':
-    test = TextBox('xdddddddddddddddddd\no.o\n.-.')
+    test = TextBox('xdddddddddddddddddd.\no.o\n.-.')
     test.width = int(input('width:'))
     test.height = int(input('height:'))
+    
+    for i in range(test.width):
+        print((i+1)%10, end='')
+    print()
+    
     print(test.ConvertStr())
