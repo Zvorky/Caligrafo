@@ -13,7 +13,7 @@
          `) ;`,; `,^,)   ||°
          ´,´  `,  `  `   |||
                           \\\
-        March     2023     |||
+         July    2023      |||
                            '''
 
 
@@ -36,6 +36,13 @@ class Spacing:
         if(amount < 0):
             return False
         self.left = self.right = self.top = self.bottom
+        return True
+    
+
+    def SetParagraph(self, amount: int):
+        if(amount < 0):
+            return False
+        self.paragraph = amount
         return True
     
 
@@ -75,6 +82,10 @@ class TextBox:
 
     def SetMargin(self, amount: int):
         return self.spacing.SetMargin(amount)
+    
+
+    def SetParagraph(self, amount: int):
+        return self.spacing.SetParagraph(amount)
     
 
     def CenterMargin(self):
@@ -132,7 +143,8 @@ class TextBox:
 
 
 
-test = TextBox('xdddddddddddddddddd\no.o')
-test.width = 16
-test.height = 2
-print(test.ConvertStr())
+if __name__ == '__main__':
+    test = TextBox('xdddddddddddddddddd\no.o')
+    test.width = int(input('width:'))
+    test.height = int(input('height:'))
+    print(test.ConvertStr())
