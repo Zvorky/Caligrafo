@@ -23,7 +23,7 @@ import os
 
 
 class Spacing:
-    def __init__(self, paragraph = 4, left = 0, right = 0, top = 0, bottom = 0):
+    def __init__(self, paragraph = 0, left = 0, right = 0, top = 0, bottom = 0):
         self.paragraph = paragraph
         self.left   = left
         self.right  = right
