@@ -97,7 +97,7 @@ class TextBox:
     
 
     #   Return the text with the formatting applied
-    def ConvertStr(self):
+    def __str__(self):
         string = ''
 
         # Reduce the paragraph spacing if needed
@@ -179,4 +179,4 @@ if __name__ == '__main__':
         print((i+1)%10, end='')
     print('\n')
     
-    print(test.ConvertStr())
+    print(str(test))
