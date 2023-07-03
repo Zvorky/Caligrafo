@@ -134,6 +134,69 @@ class TextBox:
         return max
     
 
+    #   Return a tuple with Max Width and Height
+    def Size(self):
+        width = self.width
+        height = self.height
+
+        if(width and height):
+            return width, height
+
+        paragraph = self.GetParagraph()
+
+        column = 1 # Number of Columns in current Line
+        line   = 1 # Number of Lines in current String
+
+        # Top Margin
+        line += self.spacing.top
+
+        newline = False
+        newparagraph = True
+        for char in self.text:
+
+            # Paragraph Spacing
+            if(newparagraph):
+                newparagraph = False
+                column = paragraph + self.spacing.left
+
+            column += 1
+
+            # New Line into Paragraph
+            if(char == '\n'):
+                char = ''
+                column += self.spacing.right - 1
+                newline = True
+                newparagraph = True
+
+            # Width Limit into New Line
+            elif(column == self.width - self.spacing.right):
+                column += self.spacing.right
+                newline = True
+
+            if(column > width):
+                width = column
+
+            # Check Limit and add New Line
+            if(newline):
+                newline = False
+
+                # Height Limit
+                if(line == self.height - self.spacing.bottom):
+                    height += self.spacing.bottom
+                    return width, height
+
+                column = self.spacing.left + 1
+                line   += 1
+            
+            if(line > height):
+                height = line
+
+        # Bottom Margin
+        height += self.spacing.bottom
+
+        return width, height
+    
+    
     #   Return the text with the formatting applied
     def __str__(self):
         string = ''
@@ -162,13 +225,13 @@ class TextBox:
                 string += ' ' * paragraph
                 column = paragraph + self.spacing.left
             
-            # New Line into Paragraph
+            # New Line to Paragraph
             if(char == '\n'):
                 char = ''
                 newline = True
                 newparagraph = True
             
-            # Width Limit into New Line
+            # Width Limit to New Line░
             elif(column == width - self.spacing.right):
                 newline = True
             
@@ -248,3 +311,4 @@ if __name__ == '__main__':
     print('')
     
     print(str(test))
+    print(test.Size())
