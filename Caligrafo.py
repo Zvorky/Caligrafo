@@ -34,7 +34,7 @@ class Spacing:
     def SetMargin(self, amount: int):
         if(amount < 0):
             return False
-        self.left = self.right = self.top = self.bottom
+        self.left = self.right = self.top = self.bottom = amount
         return True
     
 
@@ -119,13 +119,13 @@ class TextBox:
         if(self.width):
             return self.width
         
-        paragraph = self.GetParagraph()
+        spacing = self.GetParagraph() + self.spacing.left + self.spacing.right
 
         max = 0
-        column = paragraph
+        column = spacing
         for char in self.text:
             if(char == '\n'):
-                column = paragraph
+                column = spacing
             else:
                 column += 1
             
@@ -136,7 +136,7 @@ class TextBox:
 
     #   Return the text with the formatting applied
     def __str__(self):
-        string = ''
+        string = ' ' * self.spacing.left
 
         paragraph = self.GetParagraph()
         width = self.MaxWidth() # Not checking by column == 0 makes things easier
@@ -152,7 +152,7 @@ class TextBox:
             if(newparagraph):
                 newparagraph = False
                 string += ' ' * paragraph
-                column = paragraph
+                column = paragraph + self.spacing.left
             
             # New Line into Paragraph
             if(char == '\n'):
@@ -196,7 +196,7 @@ class TextBox:
                     return string
                 
                 # Add Newline
-                string += '\n' + char
+                string += '\n' + ' ' * self.spacing.left + char
                 column = 1
                 line   += 1
             
@@ -205,8 +205,8 @@ class TextBox:
 
 
 if __name__ == '__main__':
-    test = TextBox('''
-▒███████▒ ██▒   █▓ ▒█████   ██▀███   ██ ▄█▀▓██   ██▓
+    test = TextBox(
+'''▒███████▒ ██▒   █▓ ▒█████   ██▀███   ██ ▄█▀▓██   ██▓
 ▒ ▒ ▒ ▄▀░▓██░   █▒▒██▒  ██▒▓██ ▒ ██▒ ██▄█▒  ▒██  ██▒
 ░ ▒ ▄▀▒░  ▓██  █▒░▒██░  ██▒▓██ ░▄█ ▒▓███▄░   ▒██ ██░
   ▄▀▒   ░  ▒██ █░░▒██   ██░▒██▀▀█▄  ▓██ █▄   ░ ▐██▓░
@@ -218,6 +218,7 @@ if __name__ == '__main__':
 ░             ░                             ░ ░     ''')
     test.Resize(int(input('width:')), int(input('height:')))
     test.SetParagraph(int(input('paragraph:')))
+    test.SetMargin(3)
     
     for i in range(test.MaxWidth()):
         if((i+1)%10):
