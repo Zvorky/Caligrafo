@@ -92,6 +92,14 @@ class TextBox:
         return self.spacing.SetParagraph(amount)
     
 
+    # Reduce the paragraph spacing if width is too small
+    def GetParagraph(self):
+        if(self.width > 0 and self.spacing.paragraph >= self.width):
+            return self.width-1
+        else:
+            return self.spacing.paragraph
+    
+
     def CenterMargin(self):
         self.spacing.CenterMargin()
     
@@ -111,11 +119,13 @@ class TextBox:
         if(self.width):
             return self.width
         
+        paragraph = self.GetParagraph()
+
         max = 0
-        column = 0
+        column = paragraph
         for char in self.text:
             if(char == '\n'):
-                column = 0
+                column = paragraph
             else:
                 column += 1
             
@@ -128,11 +138,7 @@ class TextBox:
     def __str__(self):
         string = ''
 
-        # Reduce the paragraph spacing if needed
-        if(self.width > 0 and self.spacing.paragraph >= self.width):
-            paragraph = (self.width-1)
-        else:
-            paragraph = self.spacing.paragraph
+        paragraph = self.GetParagraph()
 
         column = paragraph  # Number of Columns in current Line
         line   = 1          # Number of Lines in current String
