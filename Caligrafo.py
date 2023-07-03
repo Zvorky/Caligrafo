@@ -145,6 +145,7 @@ class TextBox:
         line   = 1          # Number of Lines in current String
 
         # Top Margin
+        line += self.spacing.top
         for i in range(self.spacing.top):
             string += '\n'
         
@@ -180,7 +181,7 @@ class TextBox:
                 newline = False
 
                 # Height Limit
-                if(line == self.height):
+                if(line == self.height - self.spacing.bottom):
 
                     # Remove Paragraph or all Text if needed
                     if(len(string) <= len(self.limitMsg) + paragraph):
@@ -200,6 +201,10 @@ class TextBox:
                     
                     string += self.limitMsg
                     
+                    # Bottom Margin
+                    for i in range(self.spacing.bottom):
+                        string += '\n'
+                        
                     return string
                 
                 # Add Newline
@@ -229,7 +234,7 @@ if __name__ == '__main__':
 ░             ░                             ░ ░     ''')
     test.Resize(int(input('width:')), int(input('height:')))
     test.SetParagraph(int(input('paragraph:')))
-    test.SetMargin(3)
+    test.SetMargin(int(input('margin:')))
     
     for i in range(test.MaxWidth()):
         if((i+1)%10):
