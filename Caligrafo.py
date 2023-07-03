@@ -136,13 +136,20 @@ class TextBox:
 
     #   Return the text with the formatting applied
     def __str__(self):
-        string = ' ' * self.spacing.left
+        string = ''
 
         paragraph = self.GetParagraph()
         width = self.MaxWidth() # Not checking by column == 0 makes things easier
 
         column = paragraph  # Number of Columns in current Line
         line   = 1          # Number of Lines in current String
+
+        # Top Margin
+        for i in range(self.spacing.top):
+            string += '\n'
+        
+        # Initial Left Spacing
+        string += ' ' * self.spacing.left
 
         newline = False
         newparagraph = True
@@ -199,7 +206,11 @@ class TextBox:
                 string += '\n' + ' ' * self.spacing.left + char
                 column = 1
                 line   += 1
-            
+        
+        # Bottom Margin
+        for i in range(self.spacing.bottom):
+            string += '\n'
+        
         return string
 
 
