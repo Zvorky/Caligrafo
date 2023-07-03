@@ -139,6 +139,7 @@ class TextBox:
         string = ''
 
         paragraph = self.GetParagraph()
+        width = self.MaxWidth() # Not checking by column == 0 makes things easier
 
         column = paragraph  # Number of Columns in current Line
         line   = 1          # Number of Lines in current String
@@ -160,7 +161,7 @@ class TextBox:
                 newparagraph = True
             
             # Width Limit into New Line
-            elif(column == self.width):
+            elif(column == width):
                 newline = True
             
             else:
@@ -183,11 +184,11 @@ class TextBox:
                     
                     # Fills the Text Box with spaces
                     else:
-                        if(self.width):
-                            string += ' ' * (self.width - column)
+                        if(width):
+                            string += ' ' * (width - column)
                             string = string[0:len(string) - len(self.limitMsg)]
                     
-                    if(len(self.limitMsg) > self.width and line > 1):
+                    if(len(self.limitMsg) > width and line > 1):
                         string += '\n'
                     
                     string += self.limitMsg
@@ -204,11 +205,27 @@ class TextBox:
 
 
 if __name__ == '__main__':
-    test = TextBox('xdddddddddddddddddd.\no.o\n.-.')
+    test = TextBox('''
+▒███████▒ ██▒   █▓ ▒█████   ██▀███   ██ ▄█▀▓██   ██▓
+▒ ▒ ▒ ▄▀░▓██░   █▒▒██▒  ██▒▓██ ▒ ██▒ ██▄█▒  ▒██  ██▒
+░ ▒ ▄▀▒░  ▓██  █▒░▒██░  ██▒▓██ ░▄█ ▒▓███▄░   ▒██ ██░
+  ▄▀▒   ░  ▒██ █░░▒██   ██░▒██▀▀█▄  ▓██ █▄   ░ ▐██▓░
+▒███████▒   ▒▀█░  ░ ████▓▒░░██▓ ▒██▒▒██▒ █▄  ░ ██▒▓░
+░▒▒ ▓░▒░▒   ░ ▐░  ░ ▒░▒░▒░ ░ ▒▓ ░▒▓░▒ ▒▒ ▓▒   ██▒▒▒ 
+░░▒ ▒ ░ ▒   ░ ░░    ░ ▒ ▒░   ░▒ ░ ▒░░ ░▒ ▒░ ▓██ ░▒░ 
+░ ░ ░ ░ ░     ░░  ░ ░ ░ ▒    ░░   ░ ░ ░░ ░  ▒ ▒ ░░  
+  ░ ░          ░      ░ ░     ░     ░  ░    ░ ░     
+░             ░                             ░ ░     ''')
     test.Resize(int(input('width:')), int(input('height:')))
     test.SetParagraph(int(input('paragraph:')))
     
-    print('_'*test.MaxWidth())
+    for i in range(test.MaxWidth()):
+        if((i+1)%10):
+            print('_', end='')
+        else:
+            print(int((i+1)/10), end='')
+    print('')
+    
     for i in range(test.MaxWidth()):
         print((i+1)%10, end='')
     print('')
