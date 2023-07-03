@@ -96,6 +96,34 @@ class TextBox:
         self.spacing.CenterMargin()
     
 
+    #   Set Size
+    def Resize(self, width: int | None = 0, height: int | None = 0):
+        if(width < 0 or height < 0):
+            return False
+        
+        self.width = width
+        self.height = height
+
+        return True
+    
+    
+    def MaxWidth(self):
+        if(self.width):
+            return self.width
+        
+        max = 0
+        column = 0
+        for char in self.text:
+            if(char == '\n'):
+                column = 0
+            else:
+                column += 1
+            
+            if(column > max):
+                max = column
+        return max
+    
+
     #   Return the text with the formatting applied
     def __str__(self):
         string = ''
@@ -171,12 +199,12 @@ class TextBox:
 
 if __name__ == '__main__':
     test = TextBox('xdddddddddddddddddd.\no.o\n.-.')
-    test.width = int(input('width:'))
-    test.height = int(input('height:'))
+    test.Resize(int(input('width:')), int(input('height:')))
+    test.SetParagraph(int(input('paragraph:')))
     
-    print('_'*test.width)
-    for i in range(test.width):
+    print('_'*test.MaxWidth())
+    for i in range(test.MaxWidth()):
         print((i+1)%10, end='')
-    print('\n')
+    print('')
     
     print(str(test))
