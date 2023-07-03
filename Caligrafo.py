@@ -168,7 +168,7 @@ class TextBox:
                 newparagraph = True
             
             # Width Limit into New Line
-            elif(column == width):
+            elif(column == width - self.spacing.right):
                 newline = True
             
             else:
@@ -204,7 +204,7 @@ class TextBox:
                 
                 # Add Newline
                 string += '\n' + ' ' * self.spacing.left + char
-                column = 1
+                column = self.spacing.left + 1
                 line   += 1
         
         # Bottom Margin
