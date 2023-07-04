@@ -85,6 +85,12 @@ class TextBox:
     
 
     def SetMargin(self, amount: int):
+        # Size consistency
+        if(self.width and amount * 2 >= self.width):
+            return False
+        if(self.height and amount * 2 >= self.height):
+            return False
+        
         return self.spacing.SetMargin(amount)
     
 
@@ -92,7 +98,7 @@ class TextBox:
         return self.spacing.SetParagraph(amount)
     
 
-    # Reduce the paragraph spacing if width is too small
+    # Return a reduced paragraph spacing if width is too small
     def GetParagraph(self):
         if(self.width > 0 and self.spacing.paragraph >= self.width):
             return self.width-1
@@ -107,6 +113,13 @@ class TextBox:
     #   Set Size
     def Resize(self, width: int | None = 0, height: int | None = 0):
         if(width < 0 or height < 0):
+            return False
+        
+        # Margin consistency
+        if(width and width <= self.spacing.left + self.spacing.right):
+            return False
+        
+        if(height and height <= self.spacing.top + self.spacing.bottom):
             return False
         
         self.width = width
