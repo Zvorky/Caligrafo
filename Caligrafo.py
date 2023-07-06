@@ -31,10 +31,36 @@ class Spacing:
         self.bottom = bottom
     
 
-    def SetMargin(self, amount: int):
+    #   Set margin spacing values, None = Set all 0. "amount" have minor priority.
+    def SetMargin(self, left: int | None = None, right: int | None = None, top: int | None = None, bottom: int | None = None, amount: int | None = 0):
         if(amount < 0):
             return False
-        self.left = self.right = self.top = self.bottom = amount
+        
+        # Reset / Set All 0
+        if(left == None and right == None and top == None and bottom == None):
+            self.left = self.right = self.top = self.bottom = amount
+            return True
+        
+        values = [left, right, top, bottom]
+
+        # Check Values
+        for value in values:
+            if(value != None and value < 0):
+                return False
+        
+        # Set Values
+        if(left != None):
+            self.left = left
+
+        if(right != None):
+            self.right = right
+        
+        if(top != None):
+            self.top = top
+        
+        if(bottom != None):
+            self.bottom = bottom
+
         return True
     
 
@@ -84,14 +110,30 @@ class TextBox:
         return True
     
 
-    def SetMargin(self, amount: int):
+    #   Set margin spacing values, None = Set All 0. "amount" have minor priority.
+    def SetMargin(self, left: int | None = None, right: int | None = None, top: int | None = None, bottom: int | None = None, amount: int | None = 0):
+        horizontal = vertical = 0
+        
+        if(left != None):
+            horizontal += left
+        if(right != None):
+            horizontal += right
+        
+        if(top != None):
+            vertical += top
+        if(bottom != None):
+            vertical += bottom
+        
+        if(not horizontal and not vertical):
+            horizontal = vertical = amount
+        
         # Size consistency
-        if(self.width and amount * 2 >= self.width):
+        if(self.width and horizontal >= self.width):
             return False
-        if(self.height and amount * 2 >= self.height):
+        if(self.height and vertical >= self.height):
             return False
         
-        return self.spacing.SetMargin(amount)
+        return self.spacing.SetMargin(left, right, top, bottom, amount)
     
 
     def SetParagraph(self, amount: int):
@@ -310,8 +352,8 @@ if __name__ == '__main__':
 ░             ░                             ░ ░     ''')
     test.Resize(int(input('width:')), int(input('height:')))
     test.SetParagraph(int(input('paragraph:')))
-    test.SetMargin(int(input('margin:')))
-    
+    test.SetMargin(int(input('Margin\nLeft:')), int(input('Right:')), int(input('Top:')), int(input('Bottom:')))
+
     for i in range(test.MaxWidth()):
         if((i+1)%10):
             print('_', end='')
