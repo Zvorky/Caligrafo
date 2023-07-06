@@ -88,24 +88,23 @@ class TextBox:
         self.limitMsg = limitMsg
     
 
-    #   Horizontal = left; center; right; justified. Vertical = top; center; bottom.
+    #   None = Reset Default (Top Left). Horizontal = left; center; right; justified. Vertical = top; center; bottom.
     def SetAlignment(self, horizontal: str | None = '', vertical: str | None = ''):
         # Resets
         if(not horizontal and not vertical):
             horizontal = 'left'
             vertical = 'top'
 
-        if(horizontal):
-            horizontal = horizontal.lower()
-            if(horizontal != 'left' and horizontal != 'center' and horizontal != 'right' and horizontal != 'justified'):
-                return False
-            self.alignH = horizontal
+        horizontal = horizontal.lower() if horizontal else self.alignH
+        vertical = vertical.lower() if vertical else self.alignV
         
-        if(vertical):
-            vertical = vertical.lower()
-            if(vertical != 'top' and vertical != 'center' and vertical != 'bottom'):
+        if(horizontal != 'left' and horizontal != 'center' and horizontal != 'right' and horizontal != 'justified'):
                 return False
-            self.alignV = vertical
+        if(vertical != 'top' and vertical != 'center' and vertical != 'bottom'):
+                return False
+        
+        self.alignV = vertical
+        self.alignH = horizontal
             
         return True
     
