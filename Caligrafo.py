@@ -77,36 +77,50 @@ class Spacing:
 
 
 
+class Alignment:
+    # Index 0 represents default alignment
+    Horizontals = ['left', 'center', 'right', 'justified']
+    Verticals = ['top', 'center', 'bottom']
+
+
+    def __init__(self, horizontal: str | None = 'left', vertical: str | None = 'top'):
+        self.horizontal = Alignment.Horizontals[0]
+        self.vertical = Alignment.Verticals[0]
+    
+    
+    #   None = Reset Default (Top Left). Horizontal = left; center; right; justified. Vertical = top; center; bottom.
+    def Set(self, horizontal: str | None = '', vertical: str | None = ''):
+        # Resets
+        if(not horizontal and not vertical):
+            horizontal = Alignment.Horizontals[0]
+            vertical = Alignment.Verticals[0]
+
+        horizontal = horizontal.lower() if horizontal else self.horizontal
+        vertical = vertical.lower() if vertical else self.vertical
+        
+        if(not horizontal in Alignment.Horizontals or not vertical in Alignment.Verticals):
+                return False
+        
+        self.horizontal = horizontal
+        self.vertical = vertical
+            
+        return True
+
+
+
 class TextBox:
-    def __init__(self, text = '', width = 0, height = 0, limitMsg = '[...]'):
+    def __init__(self, text = '', width = 0, height = 0, spacing = Spacing(), alignment = Alignment(), limitMsg = '[...]'):
         self.text = text
         self.width = width
         self.height = height
-        self.spacing = Spacing()
-        self.alignH = 'left'
-        self.alignV = 'top'
+        self.spacing = spacing
+        self.alignment = alignment
         self.limitMsg = limitMsg
     
 
     #   None = Reset Default (Top Left). Horizontal = left; center; right; justified. Vertical = top; center; bottom.
     def SetAlignment(self, horizontal: str | None = '', vertical: str | None = ''):
-        # Resets
-        if(not horizontal and not vertical):
-            horizontal = 'left'
-            vertical = 'top'
-
-        horizontal = horizontal.lower() if horizontal else self.alignH
-        vertical = vertical.lower() if vertical else self.alignV
-        
-        if(horizontal != 'left' and horizontal != 'center' and horizontal != 'right' and horizontal != 'justified'):
-                return False
-        if(vertical != 'top' and vertical != 'center' and vertical != 'bottom'):
-                return False
-        
-        self.alignV = vertical
-        self.alignH = horizontal
-            
-        return True
+        return(self.alignment.Set(horizontal, vertical))
     
 
     #   Set margin spacing values, None = Set All 0. "amount" have minor priority.
@@ -352,6 +366,7 @@ if __name__ == '__main__':
     test.Resize(int(input('width:')), int(input('height:')))
     test.SetParagraph(int(input('paragraph:')))
     test.SetMargin(int(input('Margin\nLeft:')), int(input('Right:')), int(input('Top:')), int(input('Bottom:')))
+    test.SetAlignment(input('Alignment:'))
 
     for i in range(test.MaxWidth()):
         if((i+1)%10):
