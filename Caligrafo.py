@@ -121,6 +121,30 @@ class Alignment:
             elif(self.horizontal == 'center'):
                 spacing = int((width - len(line)) / 2)
                 string += ' ' * spacing + line + ' ' * spacing
+            else: # Justified
+                words = line.split()
+
+                letters = 0
+                for word in words:
+                    letters += len(word)
+                
+                spacing = []
+                for i in range(len(words)-1):
+                    spacing.append(int((width - letters) / (len(words))))
+                    # print(letters, width - letters, int((width-letters)/len(words)))
+                
+                i = 0
+                while(sum(spacing) + letters < width):
+                    spacing[i] += 1
+                    i += 1
+                    if(i >= len(spacing)):
+                        i = 0
+                
+                for i in range(len(spacing)):
+                    string += words[i] + ' ' * spacing[i]
+                
+                string += words[len(words)-1]
+            
             string += '\n'
         
         return string[:-1]
@@ -396,8 +420,8 @@ if __name__ == '__main__':
 ░             ░                             ░ ░     ''')
     test.Resize(int(input('width:')), int(input('height:')))
     # test.SetParagraph(int(input('paragraph:')))
-    test.SetMargin(int(input('Margin\nLeft:')), int(input('Right:')), int(input('Top:')), int(input('Bottom:')))
-    test.SetAlignment(input('Alignment\nHorizontal:'), input('Vertical:'))
+    # test.SetMargin(int(input('Margin\nLeft:')), int(input('Right:')), int(input('Top:')), int(input('Bottom:')))
+    # test.SetAlignment(input('Alignment\nHorizontal:'), input('Vertical:'))
 
     for i in range(test.MaxWidth()):
         if((i+1)%10):
@@ -410,5 +434,8 @@ if __name__ == '__main__':
         print((i+1)%10, end='')
     print('')
     
-    print(str(test))
+    # print(str(test))
     print(test.Size())
+
+    test.SetAlignment('justified')
+    print(str(test))
