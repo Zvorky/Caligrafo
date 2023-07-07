@@ -153,7 +153,7 @@ class TextBox:
         return self.spacing.SetParagraph(amount)
     
 
-    # Return a reduced paragraph spacing if width is too small
+    #   Return a reduced paragraph spacing if width is too small
     def GetParagraph(self):
         if(self.width > 0 and self.spacing.paragraph >= self.width):
             return self.width-1
@@ -260,7 +260,8 @@ class TextBox:
                 height = line
 
         # Bottom Margin
-        height += self.spacing.bottom
+        if(not self.height):
+            height += self.spacing.bottom
 
         return width, height
     
@@ -270,15 +271,14 @@ class TextBox:
         string = ''
 
         paragraph = self.GetParagraph()
-        width = self.MaxWidth() # Not checking by column == 0 makes things easier
+        width, height = self.Size()
 
         column = paragraph  # Number of Columns in current Line
         line   = 1          # Number of Lines in current String
 
         # Top Margin
         line += self.spacing.top
-        for i in range(self.spacing.top):
-            string += '\n'
+        string += '\n' * self.spacing.top
         
         # Initial Left Spacing
         string += ' ' * self.spacing.left
@@ -312,7 +312,7 @@ class TextBox:
                 newline = False
 
                 # Height Limit
-                if(line == self.height - self.spacing.bottom):
+                if(line == height - self.spacing.bottom):
 
                     # Remove Paragraph or all Text if needed
                     if(len(string) <= len(self.limitMsg) + paragraph):
@@ -333,8 +333,7 @@ class TextBox:
                     string += self.limitMsg
                     
                     # Bottom Margin
-                    for i in range(self.spacing.bottom):
-                        string += '\n'
+                    string += '\n' * self.spacing.bottom
                         
                     return string
                 
@@ -343,10 +342,21 @@ class TextBox:
                 column = self.spacing.left + 1
                 line   += 1
         
-        # Bottom Margin
-        for i in range(self.spacing.bottom):
-            string += '\n'
+        # Top Alignment = do nothing
+
+        # Center Alignment
+        if(self.alignment.vertical == 'center'):
+            string = '\n' * int((height - line - self.spacing.bottom) / 2) + string
+            line += int((height - line - self.spacing.bottom) / 2)
         
+        # Bottom Alignment
+        elif(self.alignment.vertical == 'bottom'):
+            string = '\n' * (height - line - self.spacing.bottom) + string
+            line += height - line - self.spacing.bottom
+        
+        # Bottom Margin
+        string += '\n' * (height - line)
+
         return string
 
 
@@ -364,9 +374,9 @@ if __name__ == '__main__':
   ░ ░          ░      ░ ░     ░     ░  ░    ░ ░     
 ░             ░                             ░ ░     ''')
     test.Resize(int(input('width:')), int(input('height:')))
-    test.SetParagraph(int(input('paragraph:')))
+    # test.SetParagraph(int(input('paragraph:')))
     test.SetMargin(int(input('Margin\nLeft:')), int(input('Right:')), int(input('Top:')), int(input('Bottom:')))
-    test.SetAlignment(input('Alignment:'))
+    test.SetAlignment(input('Alignment\nHorizontal:'), input('Vertical:'))
 
     for i in range(test.MaxWidth()):
         if((i+1)%10):
