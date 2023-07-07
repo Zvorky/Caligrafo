@@ -112,16 +112,7 @@ class Alignment:
             return text
         
         string = ''
-
-        # Break lines in a list
-        lines = ['']
-        l = 0
-        for char in text:
-            if(char == '\n'):
-                lines.append('')
-                l += 1
-            else:
-                lines[l] += char
+        lines = text.splitlines()
         
         # Apply
         for line in lines:
