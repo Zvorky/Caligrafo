@@ -105,6 +105,34 @@ class Alignment:
         self.vertical = vertical
             
         return True
+    
+
+    def ApplyHorizontal(self, text: str, width: int):
+        if(self.horizontal == 'left'):
+            return text
+        
+        string = ''
+
+        # Break lines in a list
+        lines = ['']
+        l = 0
+        for char in text:
+            if(char == '\n'):
+                lines.append('')
+                l += 1
+            else:
+                lines[l] += char
+        
+        # Apply
+        for line in lines:
+            if(self.horizontal == 'right'):
+                string += ' ' * (width - len(line)) + line
+            elif(self.horizontal == 'center'):
+                spacing = int((width - len(line)) / 2)
+                string += ' ' * spacing + line + ' ' * spacing
+            string += '\n'
+        
+        return string[:-1]
 
 
 
@@ -299,7 +327,7 @@ class TextBox:
                 newline = True
                 newparagraph = True
             
-            # Width Limit to New Line░
+            # Width Limit to New Line
             elif(column == width - self.spacing.right):
                 newline = True
             
@@ -356,6 +384,8 @@ class TextBox:
         
         # Bottom Margin
         string += '\n' * (height - line)
+
+        string = self.alignment.ApplyHorizontal(string, width)
 
         return string
 
