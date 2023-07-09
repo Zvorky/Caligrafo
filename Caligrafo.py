@@ -22,7 +22,7 @@ import os
 
 
 
-class Spacing:
+class Margin:
     def __init__(self, paragraph = 0, left = 0, right = 0, top = 0, bottom = 0):
         self.paragraph = paragraph
         self.left   = left
@@ -32,7 +32,7 @@ class Spacing:
     
 
     #   Set margin spacing values, None = Set all 0. "amount" have minor priority.
-    def SetMargin(self, left: int | None = None, right: int | None = None, top: int | None = None, bottom: int | None = None, amount: int | None = 0):
+    def Set(self, left: int | None = None, right: int | None = None, top: int | None = None, bottom: int | None = None, amount: int | None = 0):
         if(amount < 0):
             return False
         
@@ -152,11 +152,11 @@ class Alignment:
 
 
 class TextBox:
-    def __init__(self, text = '', width = 0, height = 0, spacing = Spacing(), alignment = Alignment(), limitMsg = '[...]'):
+    def __init__(self, text = '', width = 0, height = 0, margin = Margin(), alignment = Alignment(), limitMsg = '[...]'):
         self.text = text
         self.width = width
         self.height = height
-        self.spacing = spacing
+        self.margin = margin
         self.alignment = alignment
         self.limitMsg = limitMsg
     
@@ -189,23 +189,23 @@ class TextBox:
         if(self.height and vertical >= self.height):
             return False
         
-        return self.spacing.SetMargin(left, right, top, bottom, amount)
+        return self.margin.Set(left, right, top, bottom, amount)
     
 
     def SetParagraph(self, amount: int):
-        return self.spacing.SetParagraph(amount)
+        return self.margin.SetParagraph(amount)
     
 
-    #   Return a reduced paragraph spacing if width is too small
+    #   Return a reduced paragraph margin if width is too small
     def GetParagraph(self):
-        if(self.width > 0 and self.spacing.paragraph >= self.width):
+        if(self.width > 0 and self.margin.paragraph >= self.width):
             return self.width-1
         else:
-            return self.spacing.paragraph
+            return self.margin.paragraph
     
 
     def CenterMargin(self):
-        self.spacing.CenterMargin()
+        self.margin.CenterMargin()
     
 
     #   Set Size
@@ -214,10 +214,10 @@ class TextBox:
             return False
         
         # Margin consistency
-        if(width and width <= self.spacing.left + self.spacing.right):
+        if(width and width <= self.margin.left + self.margin.right):
             return False
         
-        if(height and height <= self.spacing.top + self.spacing.bottom):
+        if(height and height <= self.margin.top + self.margin.bottom):
             return False
         
         self.width = width
@@ -230,13 +230,13 @@ class TextBox:
         if(self.width):
             return self.width
         
-        spacing = self.GetParagraph() + self.spacing.left + self.spacing.right
+        margin = self.GetParagraph() + self.margin.left + self.margin.right
 
         max = 0
-        column = spacing
+        column = margin
         for char in self.text:
             if(char == '\n'):
-                column = spacing
+                column = margin
             else:
                 column += 1
             
@@ -259,29 +259,29 @@ class TextBox:
         line   = 1 # Number of Lines in current String
 
         # Top Margin
-        line += self.spacing.top
+        line += self.margin.top
 
         newline = False
         newparagraph = True
         for char in self.text:
 
-            # Paragraph Spacing
+            # Paragraph Margin
             if(newparagraph):
                 newparagraph = False
-                column = paragraph + self.spacing.left
+                column = paragraph + self.margin.left
 
             column += 1
 
             # New Line into Paragraph
             if(char == '\n'):
                 char = ''
-                column += self.spacing.right - 1
+                column += self.margin.right - 1
                 newline = True
                 newparagraph = True
 
             # Width Limit into New Line
-            elif(column == self.width - self.spacing.right):
-                column += self.spacing.right
+            elif(column == self.width - self.margin.right):
+                column += self.margin.right
                 newline = True
 
             if(column > width):
@@ -292,11 +292,11 @@ class TextBox:
                 newline = False
 
                 # Height Limit
-                if(line == self.height - self.spacing.bottom):
-                    height += self.spacing.bottom
+                if(line == self.height - self.margin.bottom):
+                    height += self.margin.bottom
                     return width, height
 
-                column = self.spacing.left + 1
+                column = self.margin.left + 1
                 line   += 1
             
             if(line > height):
@@ -304,7 +304,7 @@ class TextBox:
 
         # Bottom Margin
         if(not self.height):
-            height += self.spacing.bottom
+            height += self.margin.bottom
 
         return width, height
     
@@ -320,21 +320,21 @@ class TextBox:
         line   = 1          # Number of Lines in current String
 
         # Top Margin
-        line += self.spacing.top
-        string += '\n' * self.spacing.top
+        line += self.margin.top
+        string += '\n' * self.margin.top
         
-        # Initial Left Spacing
-        string += ' ' * self.spacing.left
+        # Initial Left Margin
+        string += ' ' * self.margin.left
 
         newline = False
         newparagraph = True
         for char in self.text:
             
-            # Paragraph Spacing
+            # Paragraph Margin
             if(newparagraph):
                 newparagraph = False
                 string += ' ' * paragraph
-                column = paragraph + self.spacing.left
+                column = paragraph + self.margin.left
             
             # New Line to Paragraph
             if(char == '\n'):
@@ -343,7 +343,7 @@ class TextBox:
                 newparagraph = True
             
             # Width Limit to New Line
-            elif(column == width - self.spacing.right):
+            elif(column == width - self.margin.right):
                 newline = True
             
             else:
@@ -355,7 +355,7 @@ class TextBox:
                 newline = False
 
                 # Height Limit
-                if(line == height - self.spacing.bottom):
+                if(line == height - self.margin.bottom):
 
                     # Remove Paragraph or all Text if needed
                     if(len(string) <= len(self.limitMsg) + paragraph):
@@ -376,26 +376,26 @@ class TextBox:
                     string += self.limitMsg
                     
                     # Bottom Margin
-                    string += '\n' * self.spacing.bottom
+                    string += '\n' * self.margin.bottom
                         
                     return string
                 
                 # Add Newline
-                string += '\n' + ' ' * self.spacing.left + char
-                column = self.spacing.left + 1
+                string += '\n' + ' ' * self.margin.left + char
+                column = self.margin.left + 1
                 line   += 1
         
         # Top Alignment = do nothing
 
         # Center Alignment
         if(self.alignment.vertical == 'center'):
-            string = '\n' * int((height - line - self.spacing.bottom) / 2) + string
-            line += int((height - line - self.spacing.bottom) / 2)
+            string = '\n' * int((height - line - self.margin.bottom) / 2) + string
+            line += int((height - line - self.margin.bottom) / 2)
         
         # Bottom Alignment
         elif(self.alignment.vertical == 'bottom'):
-            string = '\n' * (height - line - self.spacing.bottom) + string
-            line += height - line - self.spacing.bottom
+            string = '\n' * (height - line - self.margin.bottom) + string
+            line += height - line - self.margin.bottom
         
         # Bottom Margin
         string += '\n' * (height - line)
